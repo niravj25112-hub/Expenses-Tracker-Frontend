@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spend Wise Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="topbar">
+        <nav class="navbar" aria-label="Main navigation">
+            <a class="logo" href="#" aria-label="Academic Curator home">Spend Wise</a>
+            <div class="nav-tabs" role="tablist">
+                <button class="nav-link active" type="button" data-page="dashboard">Dashboard</button>
+                <button class="nav-link" type="button" data-page="addExpense">Add Expense</button>
+                <button class="nav-link" type="button" data-page="history">Expense History</button>
+                <button class="nav-link" type="button" data-page="setbudget">Set Budget</button>
+            </div>
+            <div class="nav-actions">
+                <img class="user-avatar is-hidden" id="userAvatar" alt="User profile photo">
+                <span class="user-name" id="userName"></span>
+                <button class="settings-btn" type="button" aria-label="Settings">⚙️</button>
+                <button class="logout-btn" type="button" id="logoutBtn">Logout</button>
+            </div>
+
+        </nav>
+    </header>
+
+    <main class="app-shell">
+        <div id="authPage" class="auth-page">
+            <section id="loginCard" class="auth-card auth-panel">
+                <div class="auth-brand">
+                    <span class="auth-mark">₹</span>
+                    <div>
+                        <h1>Welcome Back</h1>
+                        <p>Sign in to manage your Spend Wise account.</p>
+                    </div>
+                </div>
+
+                <label for="loginEmail">Email</label>
+                <input id="loginEmail" type="email" placeholder="Enter your email">
+
+                <label for="loginPassword">Password</label>
+                <input id="loginPassword" type="password" placeholder="Enter your password">
+
+                <p id="authError" class="error-message" aria-live="polite"></p>
+
+                <button class="primary-btn full-btn" type="button" id="loginBtn">Login</button>
+
+                <div class="auth-divider"><span>or</span></div>
+
+                <button class="google-btn" type="button" id="googleLoginBtn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+                    Continue with Google
+                </button>
+
+                <p class="auth-switch">New to Spend Wise? <button type="button" id="showSignupBtn">Create an account</button></p>
+            </section>
+
+            <section id="signupCard" class="auth-card auth-panel is-hidden">
+                <div class="auth-brand">
+                    <span class="auth-mark">₹</span>
+                    <div>
+                        <h1>Create Account</h1>
+                        <p>Set up your Spend Wise account in a minute.</p>
+                    </div>
+                </div>
+
+                <label for="signupName">Full Name</label>
+                <input id="signupName" type="text" placeholder="Enter your name">
+
+                <label for="signupEmail">Email</label>
+                <input id="signupEmail" type="email" placeholder="Enter your email">
+
+                <label for="signupPassword">Create Password</label>
+                <input id="signupPassword" type="password" placeholder="Create a password">
+                <span class="password-hint">Minimum 6 letters required.</span>
+
+                <label for="signupConfirmPassword">Confirm Password</label>
+                <input id="signupConfirmPassword" type="password" placeholder="Re-enter your password">
+
+                <p id="signupError" class="error-message" aria-live="polite"></p>
+
+                <button class="primary-btn full-btn" type="button" id="signupBtn">Create Account</button>
+
+                <div class="auth-divider"><span>or</span></div>
+
+                <button class="google-btn" type="button" id="googleSignupBtn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+                    Continue with Google
+                </button>
+
+                <p class="auth-switch">Already have an account? <button type="button" id="showLoginBtn">Login</button></p>
+            </section>
+        </div>
+
+        <div id="dashboard" class="page">
+            <section class="page-heading" aria-labelledby="dashboardTitle">
+                <h1 id="dashboardTitle">Financial Overview</h1>
+                <p>Status as of <span id="currentDate">Today</span></p>
+            </section>
+
+            <section class="summary-grid" aria-label="Financial summary">
+                <article class="summary-card">
+                    <div class="card-top">
+                        <p class="eyebrow">Monthly Budget</p>
+                        <span class="icon-box icon-blue">🎯</span>
+                    </div>
+                    <h2 id="budgetValue">₹0.00</h2>
+                    <button class="text-link" type="button" id="editBudgetBtn">Edit budget →</button>
+                </article>
+
+                <article class="summary-card">
+                    <div class="card-top">
+                        <p class="eyebrow">Monthly Spending</p>
+                        <span class="icon-box icon-orange">🛒</span>
+                    </div>
+                    <h2 id="spentValue" class="danger-text">₹0.00</h2>
+                    <p id="spentPercent" class="muted-text">0% of budget used</p>
+                </article>
+
+                <article class="summary-card">
+                    <div class="card-top">
+                        <p class="eyebrow">Remaining</p>
+                        <span class="icon-box icon-green">💰</span>
+                    </div>
+                    <h2 id="remainingValue" class="success-text">₹0.00</h2>
+                    <p id="remainingPercent" class="success-subtext">0% still left</p>
+                </article>
+            </section>
+
+            <section class="dashboard-grid" aria-label="Dashboard tools">
+                <article class="panel">
+                    <div class="panel-heading">
+                        <h2>Quick Actions</h2>
+                        <p>Jump to what you need</p>
+                    </div>
+                    <div class="action-list">
+                        <button class="action-btn" type="button" data-page="addExpense"><span>➕</span>Add Expense</button>
+                        <button class="action-btn" type="button" data-page="setbudget"><span>🎯</span>Set Budget</button>
+                        <button class="action-btn" type="button" data-page="history"><span>📋</span>View History</button>
+                    </div>
+                </article>
+
+                <article class="panel">
+                    <div class="panel-heading">
+                        <h2>Money Tips</h2>
+                        <p>Small habits, big savings</p>
+                    </div>
+                    <div class="tips-list">
+                        <div class="tip tip-blue"><strong>💡 Track everything</strong><span>Even small amounts like coffee add up fast!</span></div>
+                        <div class="tip tip-green"><strong>✅ 50-30-20 Rule</strong><span>50% needs, 30% wants, 20% savings.</span></div>
+                        <div class="tip tip-yellow"><strong>⚠️ Budget Alert</strong><span>80% used by mid-month? Slow down spending!</span></div>
+                        <div class="tip tip-purple"><strong>🎯 Goal</strong><span>Save at least 20% of budget every month!</span></div>
+                    </div>
+                </article>
+            </section>
+        </div>
+
+        <div id="addExpense" class="page form-page">
+            <button class="back-btn" type="button" data-page="dashboard">← Back to Dashboard</button>
+            <section class="center-heading" aria-labelledby="addExpenseTitle">
+                <h1 id="addExpenseTitle">New Expense Entry</h1>
+                <p>Document your expenses quickly.</p>
+            </section>
+
+            <form id="expenseForm" class="expense-form" novalidate>
+                <label for="expTitle">Description</label>
+                <input type="text" id="expTitle" placeholder="e.g. Research Journal Subscription">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expAmount">Amount</label>
+                        <input type="number" id="expAmount" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="expType">Type</label>
+                        <select id="expType">
+                            <option value="Individual">Individual</option>
+                            <option value="Shared">Shared</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label for="expCategory">Category</label>
+                <select id="expCategory">
+                    <option value="">Select a category</option>
+                    <option value="Food/Drink">Food/Drink</option>
+                    <option value="Academic">Academic</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <p id="formError" class="error-message" aria-live="polite"></p>
+                <button class="primary-btn" type="submit">Add Expense</button>
+            </form>
+        </div>
+
+        <div id="history" class="page">
+            <section class="page-heading" aria-labelledby="historyTitle">
+                <h1 id="historyTitle">Expense History</h1>
+                <p>A comprehensive overview of your expenses.</p>
+            </section>
+
+            <section class="filter-bar" aria-label="Expense filters">
+                <input type="search" id="searchInput" placeholder="Search by description">
+                <select id="categoryFilter">
+                    <option value="">All categories</option>
+                    <option value="Food/Drink">Food/Drink</option>
+                    <option value="Academic">Academic</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Other">Other</option>
+                </select>
+            </section>
+
+            <section class="table-card" aria-label="Expense history table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTable"></tbody>
+                </table>
+            </section>
+        </div>
+
+        <div id="setbudget" class="page budget-page">
+            <section class="budget-info" aria-live="polite">
+                Current monthly budget: <strong id="currentBudgetDisplay">₹0.00</strong>
+            </section>
+
+            <section class="budget-card" aria-labelledby="budgetTitle">
+                <h1 id="budgetTitle">Set Your Budget</h1>
+                <p>Choose how much you want to spend this month. Dashboard will update automatically.</p>
+
+                <label for="newBudget">Budget Amount</label>
+                <div class="money-input">
+                    <span>₹</span>
+                    <input type="number" id="newBudget" min="0" step="0.01" placeholder="2000.00">
+                </div>
+
+                <label for="budgetMonth">Month</label>
+                <select id="budgetMonth">
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May">May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+
+                <div class="button-row">
+                    <button class="primary-btn" type="button" id="saveBudgetBtn">Save Budget</button>
+                    <button class="secondary-btn" type="button" data-page="dashboard">Cancel</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+    
+</body>
+</html>
