@@ -1,114 +1,149 @@
-# 💸 Expense Tracker (Full Stack Web Application)
+# Spend Wise Expense Tracker
 
-## 📌 Project Overview
+## Project Overview
 
-This is a simple full-stack Expense Tracker web application built using HTML, CSS, JavaScript (frontend) and Flask (backend).
-The application allows users to add and view expenses dynamically.
+Spend Wise is a full-stack expense tracker web application built with HTML, CSS, JavaScript, Flask, and Supabase. Users can create an account, sign in with email/password or Google, set a monthly budget, add expenses, and view their expense history.
 
----
+## Tech Stack
 
-## 🧠 Tech Stack
+- Frontend: HTML, CSS, JavaScript
+- Backend: Python Flask
+- Authentication: Supabase Auth and Google OAuth
+- Database: Supabase PostgreSQL
+- API Integration: JavaScript `fetch()` with Flask REST APIs
 
-* Frontend: HTML, CSS, JavaScript
-* Backend: Python (Flask)
-* Database: In-memory storage (Python list)
+## Features
 
----
+- Separate login and signup UI
+- Google authentication
+- Protected dashboard after login
+- Monthly budget tracking
+- Add expense with validation
+- Expense history table
+- Search and category filter
+- User-specific budget and expense data
+- Supabase row-level security policies
+- Responsive desktop and mobile design
 
-## 🚀 Project Flow
+## Backend APIs
 
-### 1. Frontend Development
+- `POST /api/signup` - create a new user
+- `POST /api/login` - login with email and password
+- `GET /api/expenses` - get logged-in user's expenses
+- `POST /api/expenses` - add an expense
+- `DELETE /api/expenses/<id>` - delete an expense
+- `GET /api/budget` - get latest budget
+- `POST /api/budget` - save a budget
 
-* Created a single-page interface with sections:
+## Deployment Setup
 
-  * Home (Dashboard)
-  * Add Expense
-  * Add Budget
-  * Expense History
-* Used HTML for structure and CSS for styling
-* Implemented navigation using JavaScript (show/hide sections)
+### 1. Deploy Backend
 
----
+Deploy the Flask backend on Render, Railway, or any Python hosting platform.
 
-### 2. Frontend Logic (JavaScript)
+Production start command:
 
-* Used a temporary array to simulate expense data
-* Implemented:
+```bash
+gunicorn app:app
+```
 
-  * Add Expense functionality
-  * Display expenses dynamically using DOM manipulation
-  * Delete expense functionality
-* Later replaced dummy data with backend API calls
+Add these environment variables in the hosting platform settings:
 
----
+```env
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-### 3. Backend Development (Flask)
+Example deployed backend URL:
 
-* Created a Flask server with REST APIs
-* Used an in-memory list to store expenses
+```txt
+https://your-backend-name.onrender.com
+```
 
-#### APIs:
+### 2. Connect Frontend To Deployed Backend
 
-* GET /api/expenses → Fetch all expenses
-* POST /api/expenses → Add a new expense
+In `script.js`, replace the local API URL with your deployed backend URL:
 
----
+```js
+const API = "https://your-backend-name.onrender.com/api";
+```
 
-### 4. Data Validation
+### 3. Deploy Frontend
 
-* Ensured:
+Deploy the frontend on Netlify, Vercel, or GitHub Pages.
 
-  * Amount must be greater than 0
-  * Required fields are not empty
+Example deployed frontend URL:
 
----
+```txt
+https://your-frontend-name.netlify.app
+```
 
-### 5. Frontend–Backend Integration
+### 4. Update Supabase Redirect URLs
 
-* Used `fetch()` in JavaScript to connect with Flask APIs
-* Data flow:
+In Supabase:
 
-  * User submits form → API call → Backend stores data
-  * Frontend fetches updated data → UI updates
+```txt
+Authentication -> URL Configuration
+Site URL: https://your-frontend-name.netlify.app
+Redirect URLs: https://your-frontend-name.netlify.app
+```
 
----
+### 5. Update Google OAuth URLs
 
-## 🔄 Application Flow
+In Google Cloud Console:
 
-User → Frontend Form → JS Fetch API → Flask Backend → Data Stored
-↓
-Response Sent
-↓
-Frontend Updates UI
+```txt
+Authorized JavaScript origins:
+https://your-frontend-name.netlify.app
 
----
+Authorized redirect URI:
+https://zztdlspnbqjrunctjnky.supabase.co/auth/v1/callback
+```
 
-## 🎯 Features
+## Local Development Setup
 
-* Add new expense
-* View all expenses
-* Dynamic UI updates
-* Data validation
-* Full-stack integration
+Use this only when running the project on your own computer.
 
----
+### Backend
 
-## ⚠️ Note
+```bash
+cd Expenses-Tracker-Backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python app.py
+```
 
-* Data is stored in-memory, so it resets on page reload/server restart
-* No authentication is implemented
+Local backend URL:
 
----
+```txt
+http://127.0.0.1:5000
+```
 
-## 👨‍💻 Future Improvements
+For local testing, `script.js` can use:
 
-* Add SQL database integration
-* Implement update/delete APIs
-* Add filtering and search
-* Deploy frontend and backend
+```js
+const API = "http://127.0.0.1:5000/api";
+```
 
----
+Do not keep the local API URL when deploying the final frontend.
 
-## 📌 Conclusion
+## Supabase Setup
 
-This project demonstrates a basic full-stack application with API integration, dynamic UI updates, and clean code structure.
+Run `supabase-schema.sql` in the Supabase SQL Editor. It creates:
+
+- `expenses` table
+- `budgets` table
+- Row-level security policies for logged-in users
+
+For Google login, configure:
+
+- Supabase Authentication provider: Google
+- Supabase URL Configuration
+- Google Cloud OAuth consent screen and credentials
+
+## Important Notes
+
+- `.env`, `venv/`, `__pycache__/`, and `.vscode/` should not be pushed.
+- Supabase anon key can be used in frontend code.
+- Supabase service role key should never be exposed in frontend code.
