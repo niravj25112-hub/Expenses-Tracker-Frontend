@@ -1,6 +1,6 @@
 let budget = 0;
 let expenses = [];
-const API = "http://127.0.0.1:5000/api";
+const API = "https://expenses-tracker-backend-qeed.onrender.com/api";
 const SUPABASE_URL = "https://zztdlspnbqjrunctjnky.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6dGRsc3BuYnFqcnVuY3Rqbmt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NzUwNzUsImV4cCI6MjA5MzA1MTA3NX0.vns6j40f47-x9nWtboNaC4F_d3Litv0BDIqRtjRh-Ds";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
