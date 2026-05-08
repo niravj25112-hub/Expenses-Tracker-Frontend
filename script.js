@@ -4,43 +4,43 @@ const API = "https://expenses-tracker-backend-qeed.onrender.com/api";
 const SUPABASE_URL = "https://zztdlspnbqjrunctjnky.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp6dGRsc3BuYnFqcnVuY3Rqbmt5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NzUwNzUsImV4cCI6MjA5MzA1MTA3NX0.vns6j40f47-x9nWtboNaC4F_d3Litv0BDIqRtjRh-Ds";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-// Finds an element by id so repeated DOM code stays short and readable.
+
 function $(id) {
     return document.getElementById(id);
 }
-// Reads the saved login token from browser storage.
+
 function getToken() {
     return localStorage.getItem("token");
 }
-// Builds request headers for protected Flask API routes.
+
 function authHeaders() {
     return { "Content-Type": "application/json", "Authorization": `Bearer ${getToken()}` };
 }
-// Reads the display name saved after login.
+
 function getUserName() {
     return localStorage.getItem("userName") || "";
 }
-// Reads the Google profile photo saved after login.
+
 function getUserAvatar() {
     return localStorage.getItem("userAvatar") || "";
 }
-// Converts a number into a rupee currency label.
+
 function formatMoney(value) {
     return `₹${Number(value).toFixed(2)}`;
 }
-// Sends JSON requests to Flask and returns both response and data.
+
 async function apiRequest(path, options = {}) {
     const res = await fetch(`${API}${path}`, options);
     const data = await res.json();
     return { res, data };
 }
-// Saves token, name, and avatar in local storage after login.
+
 function saveUser(token, name, avatar = "") {
     localStorage.setItem("token", token);
     localStorage.setItem("userName", name);
     avatar ? localStorage.setItem("userAvatar", avatar) : localStorage.removeItem("userAvatar");
 }
-// Shows the login card or signup card inside the auth page.
+
 function showAuthMode(mode) {
     const isSignup = mode === "signup";
     $("loginCard").classList.toggle("is-hidden", isSignup);
@@ -48,11 +48,11 @@ function showAuthMode(mode) {
     setAuthError("", "login");
     setAuthError("", "signup");
 }
-// Shows an auth error message below the correct auth card.
+
 function setAuthError(message, mode = "login") {
     $(mode === "signup" ? "signupError" : "authError").textContent = message;
 }
-// Shows the requested page and keeps app pages protected.
+
 function showPage(pageId) {
     if (pageId !== "authPage" && !getToken()) pageId = "authPage";
     ["authPage", "dashboard", "addExpense", "history", "setbudget"].forEach(function (page) {
@@ -69,7 +69,7 @@ function showPage(pageId) {
     $("userAvatar").classList.toggle("is-hidden", !loggedIn || !getUserAvatar());
     if (pageId === "history") loadExpenses();
 }
-// Creates an email/password account through the Flask backend.
+
 async function signup() {
     const name = $("signupName").value.trim();
     const email = $("signupEmail").value.trim();
@@ -98,7 +98,7 @@ async function signup() {
         setAuthError("Backend is not running or cannot be reached.", "signup");
     }
 }
-// Logs in with email/password through Flask and stores the token.
+
 async function login() {
     const email = $("loginEmail").value.trim();
     const password = $("loginPassword").value;
@@ -123,7 +123,7 @@ async function login() {
         setAuthError("Backend is not running or cannot be reached.");
     }
 }
-// Starts Supabase Google login and redirects back to this page.
+
 async function loginWithGoogle(mode = "login") {
     setAuthError("", mode);
     const { error } = await supabaseClient.auth.signInWithOAuth({
@@ -132,7 +132,7 @@ async function loginWithGoogle(mode = "login") {
     });
     if (error) setAuthError(error.message, mode);
 }
-// Saves the Supabase session token so Flask can use it for database APIs.
+
 async function saveSession() {
     const { data, error } = await supabaseClient.auth.getSession();
     if (error || !data.session) return false;
@@ -145,7 +145,7 @@ async function saveSession() {
     );
     return true;
 }
-// Logs out from Supabase and clears local app state.
+
 async function logout() {
     await supabaseClient.auth.signOut();
     ["token", "userName", "userAvatar"].forEach(function (key) {
@@ -158,7 +158,7 @@ async function logout() {
     showToast("Logged out.", "#3aa45b");
     showPage("authPage");
 }
-// Recalculates dashboard cards from budget and expenses.
+
 function updateDashboard() {
     const totalSpent = expenses.reduce(function (sum, expense) {
         return sum + Number(expense.amount);
@@ -173,7 +173,7 @@ function updateDashboard() {
     $("remainingPercent").textContent = `${Math.max(0, Math.round(remainingPct))}% still left`;
     $("currentBudgetDisplay").textContent = formatMoney(budget);
 }
-// Loads logged-in user's expenses through Flask.
+
 async function loadExpenses() {
     if (!getToken()) return;
     try {
@@ -196,10 +196,10 @@ async function loadExpenses() {
         renderTable(expenses);
     }
 }
-// Renders expense rows into the history table.
+
 function renderTable(data) {
     if (data.length === 0) {
-        $("historyTable").innerHTML = `<tr><td class="empty-row" colspan="4">No expenses found.</td></tr>`;
+        $("historyTable").innerHTML = `<tr><td class="empty-row" colspan="5">No expenses found.</td></tr>`;
         return;
     }
     $("historyTable").innerHTML = data.map(function (expense) {
@@ -209,11 +209,12 @@ function renderTable(data) {
                 <td>${expense.title}</td>
                 <td><span class="badge ${getBadgeClass(expense.category)}">${expense.category}</span></td>
                 <td class="amount-text">-${formatMoney(expense.amount)}</td>
+                <td><button class="delete-btn" type="button" data-id="${expense.id}">Delete</button></td>
             </tr>
         `;
     }).join("");
 }
-// Filters the locally loaded expenses by title and category.
+
 function filterExpenses() {
     const search = $("searchInput").value.toLowerCase().trim();
     const category = $("categoryFilter").value;
@@ -222,7 +223,7 @@ function filterExpenses() {
     });
     renderTable(filtered);
 }
-// Returns the CSS badge class for a category.
+
 function getBadgeClass(category) {
     const badges = {
         "Food/Drink": "badge-food",
@@ -233,7 +234,7 @@ function getBadgeClass(category) {
     };
     return badges[category] || "badge-other";
 }
-// Validates and saves a new expense through Flask.
+
 async function handleSubmit(e) {
     e.preventDefault();
     const title = $("expTitle").value.trim();
@@ -268,7 +269,27 @@ async function handleSubmit(e) {
         $("formError").textContent = "Backend is not running or cannot be reached.";
     }
 }
-// Loads the latest saved budget for the logged-in user.
+
+async function deleteExpense(expenseId) {
+    if (!getToken()) return showToast("Please login first.", "#d73b35");
+    if (!confirm("Delete this expense?")) return;
+    try {
+        const { res, data } = await apiRequest(`/expenses/${expenseId}`, {
+            method: "DELETE",
+            headers: authHeaders()
+        });
+        if (!res.ok) return showToast(data.error || data.message || "Could not delete expense.", "#d73b35");
+        expenses = expenses.filter(function (expense) {
+            return expense.id !== expenseId;
+        });
+        filterExpenses();
+        updateDashboard();
+        showToast("Expense deleted successfully.", "#3aa45b");
+    } catch (error) {
+        showToast("Backend is not running or cannot be reached.", "#d73b35");
+    }
+}
+
 async function loadBudget() {
     if (!getToken()) return;
     try {
@@ -302,7 +323,7 @@ async function saveBudget() {
         showToast("Backend is not running or cannot be reached.", "#d73b35");
     }
 }
-// Shows a short notification message.
+
 function showToast(message, color) {
     const toast = $("toast");
     toast.textContent = message;
@@ -310,7 +331,7 @@ function showToast(message, color) {
     toast.classList.add("show");
     setTimeout(function () { toast.classList.remove("show"); }, 2500);
 }
-// Connects buttons, forms, search, and filter controls to their functions.
+
 function initializeEvents() {
     document.querySelectorAll("[data-page]").forEach(function (button) {
         button.addEventListener("click", function () { showPage(button.dataset.page); });
@@ -330,10 +351,13 @@ function initializeEvents() {
         $(id).addEventListener("click", clicks[id]);
     });
     $("expenseForm").addEventListener("submit", handleSubmit);
+    $("historyTable").addEventListener("click", function (event) {
+        if (event.target.classList.contains("delete-btn")) deleteExpense(event.target.dataset.id);
+    });
     $("searchInput").addEventListener("input", filterExpenses);
     $("categoryFilter").addEventListener("change", filterExpenses);
 }
-// Sets current date, restores session, and opens the correct first page.
+
 async function initializeApp() {
     const today = new Date();
     $("currentDate").textContent = today.toLocaleDateString("en-US", {
