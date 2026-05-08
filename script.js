@@ -31,7 +31,8 @@ function formatMoney(value) {
 
 async function apiRequest(path, options = {}) {
     const res = await fetch(`${API}${path}`, options);
-    const data = await res.json();
+    const text = await res.text();
+    const data = text ? JSON.parse(text) : {};
     return { res, data };
 }
 
